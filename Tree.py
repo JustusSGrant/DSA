@@ -38,25 +38,25 @@ def bst_remove_node(root, val):
             
 # DFS Algorithms
 # Time Complexity: O(n)             
-def bst_inorder_dfs(root, target):
+def inorder_dfs(root, target):
     if not root:
         return
     result = []
-    bst_inorder_dfs(root.left, target)
+    inorder_dfs(root.left, target)
     print(root.val)
     if (root.val == target):
         return root
-    bst_inorder_dfs(root.right, target)
+    inorder_dfs(root.right, target)
     
-def bst_revorder_dfs(root, target):
+def revorder_dfs(root, target):
     if not root:
         return
     result = []
-    bst_revorder_dfs(root.right, target)
+    revorder_dfs(root.right, target)
     print(root.val)
     if root.val == target:
         return root
-    bst_revorder_dfs(root.left, target)
+    revorder_dfs(root.left, target)
     
 def bst_preorder(root):
     if not root:
@@ -74,3 +74,4 @@ def bst_postorder(root):
     bst_postorder(root.right)
     print(root.val)
     
+# BFS Algorithms
