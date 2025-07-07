@@ -65,6 +65,7 @@ def bst_postorder(root):
     print(root.val)
     
 # BFS Algorithms
+# TIme Complexity: O(n)
 def tree_bfs(root, target):
     nodeQueue = deque()
     
