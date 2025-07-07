@@ -6,6 +6,7 @@ def bst_min(root):
         bst_min(curr)
     return curr
 
+# Time Complexity: Worst case: O(logn)    
 def bst_insert_node(root, val):
     if not root:
         return TreeNode(val)
@@ -33,3 +34,43 @@ def bst_remove_node(root, val):
             minNode = bst_min(root.right)
             root.val = minNode.val
             root.right = bst_remove_node(root.right, minNode.val)
+            
+            
+# DFS Algorithms
+# Time Complexity: O(n)             
+def bst_inorder_dfs(root, target):
+    if not root:
+        return
+    result = []
+    bst_inorder_dfs(root.left, target)
+    print(root.val)
+    if (root.val == target):
+        return root
+    bst_inorder_dfs(root.right, target)
+    
+def bst_revorder_dfs(root, target):
+    if not root:
+        return
+    result = []
+    bst_revorder_dfs(root.right, target)
+    print(root.val)
+    if root.val == target:
+        return root
+    bst_revorder_dfs(root.left, target)
+    
+def bst_preorder(root):
+    if not root:
+        return
+    result = []
+    print(root.val)
+    bst_preorder(root.left)
+    bst_preorder(root.right)
+    
+def bst_postorder(root):
+    if not root:
+        return
+    result = []
+    bst_postorder(root.left)
+    bst_postorder(root.right)
+    print(root.val)
+    
