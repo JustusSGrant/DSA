@@ -100,13 +100,13 @@ def bt_canReachLeaf(root, path):
     path.pop()
     return False
 
-def ary_backtrack(start, path, nums):
+def ary_backtrack(start, path, nums, result):
     result.append(path[:])
 
     for i in range(start, len(nums)):
         path.append(nums[i])
-        backtrack(i + 1, path)
+        ary_backtrack(i + 1, path)
         path.pop()
 
 def all_subsets(self, nums):
-    return ary_backtrack(0, [], nums)
+    return ary_backtrack(0, [], nums, [])
