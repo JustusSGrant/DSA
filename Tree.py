@@ -1,4 +1,5 @@
-from Node import TreeNode   
+from Node import TreeNode
+from collections import deque
 
 def bst_min(root):
     curr = root
@@ -75,3 +76,20 @@ def bst_postorder(root):
     print(root.val)
     
 # BFS Algorithms
+def tree_bfs(root):
+    nodeQueue = deque()
+    
+    if root:
+        nodeQueue.append(root)
+    level = 0
+    while len(nodeQueue) > 0:
+        print("level: ", level)
+        for i in range(len(nodeQueue)):
+            curr = nodeQueue.popleft()
+            print(curr.val)
+            if curr.left:
+                nodeQueue.append(curr.left)
+            if curr.right:
+                nodeQueue.append(curr.right)
+        level += 1
+    
