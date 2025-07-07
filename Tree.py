@@ -76,7 +76,7 @@ def bst_postorder(root):
     print(root.val)
     
 # BFS Algorithms
-def tree_bfs(root):
+def tree_bfs(root, target):
     nodeQueue = deque()
     
     if root:
@@ -87,9 +87,11 @@ def tree_bfs(root):
         for i in range(len(nodeQueue)):
             curr = nodeQueue.popleft()
             print(curr.val)
+            if (curr.val == target):
+                return curr
             if curr.left:
-                nodeQueue.append(curr.left)
+                nodeQueue.append(curr.left, target)
             if curr.right:
-                nodeQueue.append(curr.right)
+                nodeQueue.append(curr.right, target)
         level += 1
     
