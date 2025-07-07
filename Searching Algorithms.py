@@ -84,4 +84,18 @@ def tree_bfs(root, target):
             if curr.right:
                 nodeQueue.append(curr.right, target)
         level += 1
+
+def bt_canReachLeaf(root, path):
+    if not root or root.val == 0:
+        return False
     
+    path.append(root.val)
+    
+    if not root.left and not root.right:
+        return True
+    if bt_canReachLeaf(root.left):
+        return True
+    if bt_canReachLeaf(root.right):
+        return True
+    path.pop()
+    return False
