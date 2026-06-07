@@ -1,0 +1,121 @@
+import math
+import heapq
+
+
+def a_star_graph_search(graph, src, dest):
+    found_dest = False
+
+    try:
+        graph.pos(src)
+        graph.pos(dest)
+    except KeyError as e:
+        print(f"Source or destination not found in graph: {e}")
+        return
+
+    if is_destination(src, dest):
+        print("We have already reached the destination")
+        return
+
+    visited_nodes = set()
+    active_plane = {}  # Maps node -> Cell (replaces the 2D grid active_plane)
+
+    # Initialize the start node on the active plane
+    src_cell = Cell()
+    src_cell.total_cost = 0.0
+    src_cell.cost_from_start = 0.0
+    src_cell.heuristic_cost_to_dest = 0.0
+    src_cell.parent = src
+    active_plane[src] = src_cell
+
+    # Initialize our frontier (paths to explore)
+    frontier = []
+    heapq.heappush(frontier, (0.0, src))
+
+    # Begin A* algorithm
+    while len(frontier) > 0:
+        # Pop the node with the lowest total_cost
+        _, current_node = heapq.heappop(frontier)
+
+        # Skip stale frontier entries (lazy deletion)
+        if current_node in visited_nodes:
+            continue
+
+        # Mark node as visited
+        visited_nodes.add(current_node)
+
+        # Explore neighbors (replaces the 8-direction check on bounded grid)
+        for neighbor in graph.neighbors(current_node):
+            if neighbor in visited_nodes:
+                continue
+
+            # Check successor
+            if is_destination(neighbor, dest):
+                if neighbor not in active_plane:
+                    active_plane[neighbor] = Cell()
+                active_plane[neighbor].parent = current_node
+                print("Found the destination.")
+                trace_path(active_plane, src, dest)
+                found_dest = True
+                return
+            else:
+                # Calculate various values for the new node
+                edge_weight = graph.get_edge_weight(current_node, neighbor)
+                new_cost_from_start = active_plane[current_node].cost_from_start + edge_weight
+                new_heuristic_val = calc_heuristic_val(graph, neighbor, dest)
+                # This next line is the mathematical core of the Algorithm
+                new_total_cost = new_cost_from_start + new_heuristic_val
+
+                # Lazily initialize neighbor on the active plane if not yet seen
+                if neighbor not in active_plane:
+                    active_plane[neighbor] = Cell()
+
+                neighbor_cell = active_plane[neighbor]
+
+                # If the new node has not been initialized or we found a cheaper path
+                if neighbor_cell.total_cost == float('inf') or neighbor_cell.total_cost > new_total_cost:
+                    heapq.heappush(frontier, (new_total_cost, neighbor))
+                    # Update the active plane
+                    neighbor_cell.total_cost = new_total_cost
+                    neighbor_cell.cost_from_start = new_cost_from_start
+                    neighbor_cell.heuristic_cost_to_dest = new_heuristic_val
+                    neighbor_cell.parent = current_node
+
+    if not found_dest:
+        print("Failed to find the destination node.")
+        return
+
+
+class Cell:
+    def __init__(self):
+        self.parent = None                      # Node identifier of the parent (replaces parent_row/parent_col)
+        self.total_cost = float('inf')          # f
+        self.cost_from_start = float('inf')     # g
+        self.heuristic_cost_to_dest = 0         # h
+
+
+# Calculate the heuristic value using Euclidean distance via graph.pos()
+def calc_heuristic_val(graph, node, dest):
+    x1, y1 = graph.pos(node)
+    x2, y2 = graph.pos(dest)
+    return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
+
+def is_destination(node, dest):
+    return node == dest
+
+# Trace path from source to dest
+def trace_path(active_plane, src, dest):
+    print("The path is: ")
+    path = []
+    current = dest
+
+    # Trace the path from dest to source using parent nodes
+    while active_plane[current].parent != current:
+        path.append(current)
+        current = active_plane[current].parent
+
+    path.append(src)
+    path.reverse()
+
+    for step in path:
+        print("->", step, end=" ")
+    print()
